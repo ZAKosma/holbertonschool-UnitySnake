@@ -47,7 +47,7 @@ public class Grid
                 if (snakeStartX == x && snakeStartY == y)
                 {
                     grid[x, y] = new Cell(x, y, Occupant.snake);
-                    GameManager.Instance.Snake().SetSnakeHead(grid[x,y]);
+                    GameManager.Instance.CreateSnake(grid[x,y]);
                     Debug.Log("X: " + x + " Y: " + y + " Value: " + grid[x,y].GetCellValue());
                 }
                 else

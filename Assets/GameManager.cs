@@ -22,11 +22,13 @@ public class GameManager : MonoBehaviour
     {
         if (Instance != null && Instance != this) 
         { 
+            Debug.Log("Other Singleton of GameManager exists, destroy me!");
             Destroy(this); 
         } 
         else 
-        { 
-            Instance = this; 
+        {
+            Debug.Log("There can only be one!");
+            Instance = this;
         } 
         grid = GridModel.Instance;
     }
@@ -149,10 +151,17 @@ public class GameManager : MonoBehaviour
 
     IEnumerator StartDelay()
     {
+        var splitDelay = startDelay / 3;
+        
         yield return new WaitForSeconds(.1f);
         //Debug.Log("Cell: " + grid.GetCell(grid.snakeStartX, grid.snakeStartY));
         snake = Snake();
-        yield return new WaitForSeconds(startDelay);
+        yield return new WaitForSeconds(splitDelay);
+        StopLight.Instance.UpdateLight();
+        yield return new WaitForSeconds(splitDelay);
+        StopLight.Instance.UpdateLight();
+        yield return new WaitForSeconds(splitDelay);
+        StopLight.Instance.UpdateLight();
         Debug.LogWarning("Starting Simulation");
         StartCoroutine(Simulate());
     }
@@ -185,5 +194,10 @@ public class GameManager : MonoBehaviour
         }
         return snake;
     }
-    
+
+    public void CreateSnake(Cell c)
+    {
+        snake = new Snake(new Cell(0, 0, Occupant.snake));
+        snake.InitSnake(c);
+    }
 }

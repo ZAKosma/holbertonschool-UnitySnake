@@ -35,12 +35,15 @@ public class GridModel : MonoBehaviour
         if (Instance != null && Instance != this) 
         { 
             Destroy(this); 
-        } 
-        else 
-        { 
-            Instance = this; 
         }
+        else
+        {
+            Instance = this;
+        }
+    }
 
+    private void Start()
+    {
         if (grid == null)
         {
             CreateNewGrid();
