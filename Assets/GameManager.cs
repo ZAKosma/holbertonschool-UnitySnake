@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using ScriptableObjectArchitecture;
 
@@ -47,41 +48,69 @@ public class GameManager : MonoBehaviour
         var snakeHead = snake.GetSnakeHead();
 
         Coord startingValue = new Coord(snakeHead.X(), snakeHead.Y());
+        Coord nextCell = new Coord(snakeHead.X(), snakeHead.Y());
         //Move the player / snake
         switch (snake.snakeDirection)
         {
-            case Direction.up:
-                Debug.Log("Current: " + grid.GetCell(snakeHead.X(), snakeHead.Y()).GetCellValue());
-                if (CheckNext(snakeHead.X(), snakeHead.Y() + 1))
+            case Direction.upRight:
+                //Debug.Log("Current: " + grid.GetCell(snakeHead.X(), snakeHead.Y()).GetCellValue());
+                nextCell.x += 1;
+                nextCell.y -= 1;
+                if (CheckNext(nextCell))
                 {
                     GameOver();
                     return;
                 }
-                MoveSnakeTo(snakeHead.X(), snakeHead.Y() + 1, startingValue);
+                MoveSnakeTo(nextCell, startingValue);
                 break;
-            case Direction.down:
-                if (CheckNext(snakeHead.X(), snakeHead.Y() - 1))
+            case Direction.upLeft:
+                nextCell.x--;
+                nextCell.y--;
+                //Debug.Log("Current: " + grid.GetCell(snakeHead.X(), snakeHead.Y()).GetCellValue());
+                if (CheckNext(nextCell))
                 {
                     GameOver();
                     return;
                 }
-                MoveSnakeTo(snakeHead.X(), snakeHead.Y() - 1, startingValue);
+                MoveSnakeTo(nextCell, startingValue);
+                break;
+            case Direction.downLeft:
+                nextCell.x--;
+                nextCell.y++;
+                if (CheckNext(nextCell))
+                {
+                    GameOver();
+                    return;
+                }
+                MoveSnakeTo(nextCell, startingValue);
+                break;
+            case Direction.downRight:
+                nextCell.x++;
+                nextCell.y++;
+                if (CheckNext(nextCell))
+                {
+                    GameOver();
+                    return;
+                }
+                MoveSnakeTo(nextCell, startingValue);
                 break;
             case Direction.right:
-                if (CheckNext(snakeHead.X() + 1, snakeHead.Y()))
+                nextCell.x -= 2;
+                if (CheckNext(nextCell))
                 {
                     GameOver();
                     return;
                 }
-                MoveSnakeTo(snakeHead.X() + 1, snakeHead.Y(), startingValue);
+                MoveSnakeTo(nextCell, startingValue);
                 break;
             case Direction.left:
-                if (CheckNext(snakeHead.X() - 1, snakeHead.Y()))
+                nextCell.x += 2;
+                if (CheckNext(nextCell))
                 {
                     GameOver();
                     return;
                 }
-                MoveSnakeTo(snakeHead.X() - 1, snakeHead.Y(), startingValue);
+                MoveSnakeTo(nextCell, startingValue);
                 break;
 
         }
@@ -135,6 +164,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    bool CheckNext(Coord c)
+    {
+        return CheckNext(c.x, c.y);
+    }
+
     void MoveSnakeTo(int x, int y, Coord oldCoord)
     {
         /* Added to Snake Script as MoveSnakePart()
@@ -169,6 +203,11 @@ public class GameManager : MonoBehaviour
         {
             grid.SetCell(previousPosition.x, previousPosition.y, Occupant.empty);
         }
+    }
+
+    void MoveSnakeTo(Coord target, Coord oldCoord)
+    {
+        MoveSnakeTo(target.x, target.y, oldCoord);
     }
 
     IEnumerator StartDelay()
@@ -260,10 +299,9 @@ public class GameManager : MonoBehaviour
     private void DebugSnakePosition()
     {
         Debug.LogWarning("SNAKE DEBUG!!!");
-        Debug.Log("Snake head: " + snake.GetSnakeHead().X() + ", " + snake.GetSnakeHead().Y());
         foreach (var body in snake.snakeCells)
         {
-            Debug.Log("Snake body: " + body.X() + ", " + body.Y());
+            Debug.Log("Snake location: " + body.X() + ", " + body.Y());
 
         }
         

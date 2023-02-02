@@ -3,26 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Grid
+public class HexGrid : Grid
 {
-    protected Cell[,] grid;
-
-    public Snake snake;
-
-    public Grid()
+    public HexGrid()
     {
-        grid = new Cell[12, 12];
+        grid = new Cell[24, 24];
 
-        for (int x = 0; x < 12; x++)
+        for (int x = 0; x < 24; x++)
         {
-            for (int y = 0; y < 12; y++)
+            for (int y = 0; y < 24; y++)
             {
                 grid[x, y] = new Cell(x, y);
             }
         }
     }
     
-    public Grid(int xSize, int ySize)
+    public HexGrid(int xSize, int ySize)
     {
         grid = new Cell[xSize, ySize];
 
@@ -36,7 +32,7 @@ public class Grid
         }
     }
     
-    public Grid(int xSize, int ySize, int snakeStartX, int snakeStartY)
+    public HexGrid(int xSize, int ySize, int snakeStartX, int snakeStartY)
     {
         grid = new Cell[xSize, ySize];
 
@@ -60,21 +56,6 @@ public class Grid
                 }
             }
         }
-    }
-
-    public Occupant GetCellValue(int x, int y)
-    {
-        return grid[x, y].GetCellValue();
-    }
-
-    public Cell GetCell(int x, int y)
-    {
-        return grid[x, y];
-    }
-    
-    public Cell SetCellValue(int x, int y, Occupant occupant = 0)
-    {
-        return grid[x, y].SetCellValue(occupant);
     }
 }
 

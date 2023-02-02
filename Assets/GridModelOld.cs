@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridModel : MonoBehaviour
+public class GridModelOld : MonoBehaviour
 {
-    public static GridModel Instance { get; private set; }
+    public static GridModelOld Instance { get; private set; }
     
     private Grid grid;
     
@@ -90,7 +90,7 @@ public class GridModel : MonoBehaviour
         //Create and Render the models
         Vector3 anchorStart = gridAnchorPoint.transform.position;
 
-        /*for (int x = 0; x < xSize; x++)
+        for (int x = 0; x < xSize; x++)
         {
             for (int y = 0; y < ySize; y++)
             {
@@ -114,56 +114,6 @@ public class GridModel : MonoBehaviour
                 go.transform.position = newPos;
                 
                 cm.UpdateCellColor(GetOccupantColor(o));
-            }
-        }*/
-
-        for (int y = 0; y < ySize; y++)
-        {
-            if (y % 2 == 0)
-            {
-                for (int x = 1; x < xSize + 1; x += 2)
-                {
-                    Occupant o = grid.GetCellValue(x, y);
-                    GameObject go = Instantiate(cellPrefab, gridAnchorPoint.transform);
-                    CellModel cm = go.GetComponent<CellModel>();
-
-                    cm.Init(grid.GetCell(x,y));
-                    cm.SetSize(cellSize - borderSize, cellSize);
-                    grid.GetCell(x, y).SetModel(cm);
-
-                    var newPos = anchorStart;
-                    newPos.x += ((x / 2) * (cellSize + cellSpacing)) + cellSpacing;
-                    newPos.x += (cellSize / 2);
-                    newPos.y += (y / 2) * ((cellSize + cellSpacing)* .75f);
-                
-                
-                    go.transform.position = newPos;
-                
-                    cm.UpdateCellColor(GetOccupantColor(o));
-                }
-            }
-            else
-            {
-                for (int x = 0; x < xSize; x += 2)
-                {
-                    Occupant o = grid.GetCellValue(x, y);
-                    GameObject go = Instantiate(cellPrefab, gridAnchorPoint.transform);
-                    CellModel cm = go.GetComponent<CellModel>();
-
-                    cm.Init(grid.GetCell(x,y));
-                    cm.SetSize(cellSize - borderSize, cellSize);
-                    grid.GetCell(x, y).SetModel(cm);
-
-                    var newPos = anchorStart;
-                    newPos.x += ((x / 2) * (cellSize + cellSpacing)) + cellSpacing;
-
-                    newPos.y += (y / 2) * ((cellSize + cellSpacing)* .75f);
-                
-                
-                    go.transform.position = newPos;
-                
-                    cm.UpdateCellColor(GetOccupantColor(o));
-                }
             }
         }
     }

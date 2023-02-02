@@ -5,10 +5,12 @@ using UnityEngine.UIElements;
 
 public enum Direction
 {
-    up = 0,
-    down = 1,
-    right = 2,
-    left = 3
+    right = 0,
+    left = 1,
+    upRight = 2,
+    upLeft = 3,
+    downRight = 4,
+    downLeft = 5
 }
 public class Snake
 {
@@ -27,7 +29,7 @@ public class Snake
         
         snakeCells.Add(c);
 
-        snakeDirection = Direction.up;
+        snakeDirection = Direction.right;
 
         return this;
     }
