@@ -22,7 +22,9 @@ public class GridModel : MonoBehaviour
 
     public int snakeStartX = -1;
     public int snakeStartY = -1;
-    
+
+    public int startingFruit = 2;
+
     //Colors
     public Color backGroundColor;
     public Color snakeColor;
@@ -139,9 +141,19 @@ public class GridModel : MonoBehaviour
         return cell.GetModel();
     }
 
+    public CellModel SetCell(Coord c, Occupant newOccupant)
+    {
+        return SetCell(c.x, c.y, newOccupant);
+    }
+
     public Cell GetCell(int x, int y)
     {
         //Debug.Log(grid.GetCell(x,y));
         return grid.GetCell(x, y);
+    }
+
+    public Cell GetCell(Coord c)
+    {
+        return GetCell(c.x, c.y);
     }
 }

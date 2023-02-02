@@ -6727,6 +6727,7 @@ MonoBehaviour:
   ySize: 12
   snakeStartX: 6
   snakeStartY: 6
+  startingFruit: 10
   backGroundColor: {r: 0.3679245, g: 0.3679245, b: 0.3679245, a: 1}
   snakeColor: {r: 0.8867924, g: 0.8316336, b: 0.4155096, a: 1}
   fruitColor: {r: 0.5308504, g: 0.35154855, b: 0.7075472, a: 1}
@@ -26990,6 +26991,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6556aab51dedf24b91889c277054892, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FlashRate: 0.3
+  FlashTime: 3
   lights:
   - {fileID: 1115772816}
   - {fileID: 547117316}

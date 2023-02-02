@@ -62,6 +62,11 @@ public class CellModel : MonoBehaviour
         return this.GetCellValue();
     }
 
+    public Cell GetCellRaw()
+    {
+        return thisCell;
+    }
+
     public void UpdateCellColor()
     {
         thisModelColor.color = GridModel.Instance.GetOccupantColor(thisCell.GetCellValue());

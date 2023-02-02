@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     public int simulationsPerSecond = 2;
 
     public float startDelay = 3;
+
+    private bool snakeIsGrowing = false;
     
     private void Awake()
     {
@@ -120,6 +122,9 @@ public class GameManager : MonoBehaviour
                 return false;
             case Occupant.fruit:
                 //Trigger fruiting!
+                //First we add a new snake cell
+                snakeIsGrowing = true;
+                //Add fruit
                 return false;
             case Occupant.wall:
                 return true;
@@ -132,21 +137,38 @@ public class GameManager : MonoBehaviour
 
     void MoveSnakeTo(int x, int y, Coord oldCoord)
     {
-        grid.SetCell(x, y, Occupant.snake);
-        snake.snakeCells[0] = grid.GetCell(x, y);
+        /* Added to Snake Script as MoveSnakePart()
+         * grid.SetCell(x, y, Occupant.snake);
+         * snake.snakeCells[0] = grid.GetCell(x, y);
+        */
+        snake.MoveSnakePart(x, y, 0);
         
         Coord previousPosition = oldCoord;
         //Move older snake body to front;
-        for (var index = 1; index < snake.snakeCells.Count - 1; index++)
+        for (var index = 1; index < snake.snakeCells.Count; index++)
         {
-            previousPosition.x = snake.snakeCells[index].X();
-            previousPosition.y = snake.snakeCells[index].Y();
-            
             grid.SetCell(previousPosition.x, previousPosition.y, Occupant.snake);
-            snake.snakeCells[1] = grid.GetCell(previousPosition.x, previousPosition.y);
+
+            var oldX = snake.snakeCells[index].X();
+            var oldY = snake.snakeCells[index].Y();
+
+            snake.snakeCells[index] = grid.GetCell(previousPosition.x, previousPosition.y);
+
+            previousPosition.x = oldX;
+            previousPosition.y = oldY;
         }
 
-        grid.SetCell(previousPosition.x, previousPosition.y, Occupant.empty);
+        if (snakeIsGrowing)
+        {
+            snake.Grow(previousPosition);
+            
+            snakeIsGrowing = false;
+            AddFruit();
+        }
+        else
+        {
+            grid.SetCell(previousPosition.x, previousPosition.y, Occupant.empty);
+        }
     }
 
     IEnumerator StartDelay()
@@ -162,6 +184,11 @@ public class GameManager : MonoBehaviour
         StopLight.Instance.UpdateLight();
         yield return new WaitForSeconds(splitDelay);
         StopLight.Instance.UpdateLight();
+        Debug.LogWarning("Generating fruit");
+        for (var i = 0; i < GridModel.Instance.startingFruit; i++)
+        {
+            AddFruit();
+        }
         Debug.LogWarning("Starting Simulation");
         StartCoroutine(Simulate());
     }
@@ -199,5 +226,46 @@ public class GameManager : MonoBehaviour
     {
         snake = new Snake(new Cell(0, 0, Occupant.snake));
         snake.InitSnake(c);
+    }
+
+    public void AddFruit()
+    {
+        var isSafeSpawn = false;
+        var spawnLocation = GetRandomCoordinate();
+
+        while (!isSafeSpawn)
+        {
+            if (GridModel.Instance.GetCell(spawnLocation).GetCellValue() == Occupant.empty)
+            {
+                isSafeSpawn = true;
+            }
+            else
+            {
+                spawnLocation = GetRandomCoordinate();
+            }
+        }
+
+        GridModel.Instance.SetCell(spawnLocation, Occupant.fruit);
+    }
+
+    private Coord GetRandomCoordinate()
+    {
+        Coord newCoord = new Coord(Random.Range(0, GridModel.Instance.xSize), 
+            Random.Range(0, GridModel.Instance.ySize));
+
+        return newCoord;
+    }
+
+    [ContextMenu("Debug my snake!")]
+    private void DebugSnakePosition()
+    {
+        Debug.LogWarning("SNAKE DEBUG!!!");
+        Debug.Log("Snake head: " + snake.GetSnakeHead().X() + ", " + snake.GetSnakeHead().Y());
+        foreach (var body in snake.snakeCells)
+        {
+            Debug.Log("Snake body: " + body.X() + ", " + body.Y());
+
+        }
+        
     }
 }

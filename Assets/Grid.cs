@@ -48,12 +48,12 @@ public class Grid
                 {
                     grid[x, y] = new Cell(x, y, Occupant.snake);
                     GameManager.Instance.CreateSnake(grid[x,y]);
-                    Debug.Log("X: " + x + " Y: " + y + " Value: " + grid[x,y].GetCellValue());
+                    //Debug.Log("X: " + x + " Y: " + y + " Value: " + grid[x,y].GetCellValue());
                 }
                 else
                 {
                     grid[x, y] = new Cell(x, y);
-                    Debug.Log("X: " + x + " Y: " + y + " Value: " + grid[x,y].GetCellValue());
+                    //Debug.Log("X: " + x + " Y: " + y + " Value: " + grid[x,y].GetCellValue());
                 }
             }
         }

@@ -41,4 +41,15 @@ public class Snake
     {
         InitSnake(snakeHead);
     }
+
+    public void Grow(Coord c)
+    {
+        snakeCells.Add(GridModel.Instance.GetCell(c));
+    }
+
+    public void MoveSnakePart(int x, int y, int index)
+    {
+        snakeCells[index] = GridModel.Instance.SetCell(x, y, Occupant.snake).GetCellRaw();
+        
+    }
 }
