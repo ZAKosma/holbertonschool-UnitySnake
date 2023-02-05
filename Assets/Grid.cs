@@ -9,40 +9,15 @@ public class Grid
 
     public Snake snake;
 
-    public Grid()
-    {
-        grid = new Cell[12, 12];
-
-        for (int x = 0; x < 12; x++)
-        {
-            for (int y = 0; y < 12; y++)
-            {
-                grid[x, y] = new Cell(x, y);
-            }
-        }
-    }
     
-    public Grid(int xSize, int ySize)
+    public Grid(int xSize, int ySize, int snakeStartX = -1, int snakeStartY = -1)
     {
+        xSize *= 2;
         grid = new Cell[xSize, ySize];
 
-        for (int x = 0; x < xSize; x++)
+        for (int y = 0; y < ySize; y++)
         {
-            for (int y = 0; y < ySize; y++)
-            {
-                grid[x, y] = new Cell(x, y);
-                Debug.Log("X: " + x + " Y: " + y + " Value: " + grid[x,y].GetCellValue());
-            }
-        }
-    }
-    
-    public Grid(int xSize, int ySize, int snakeStartX, int snakeStartY)
-    {
-        grid = new Cell[xSize, ySize];
-
-        for (int x = 0; x < xSize; x++)
-        {
-            for (int y = 0; y < ySize; y++)
+            for (int x = 0; x < xSize; x++)
             {
                 if (snakeStartX == x && snakeStartY == y)
                 {
@@ -50,14 +25,19 @@ public class Grid
                     if (GameManager.Instance != null)
                     {
                         GameManager.Instance.CreateSnake(grid[x,y]);
-                    }
-                    Debug.Log("X: " + x + " Y: " + y + " Value: " + grid[x,y].GetCellValue());
+                    } 
                 }
                 else
                 {
                     grid[x, y] = new Cell(x, y);
-                    Debug.Log("X: " + x + " Y: " + y + " Value: " + grid[x,y].GetCellValue());
                 }
+
+                if ((x + y) % 2 == 1)
+                {
+                    SetCellValue(x,y, Occupant.bad);
+                }
+
+                Debug.Log("X: " + x + " Y: " + y + " Value: " + grid[x,y].GetCellValue());
             }
         }
     }

@@ -54,8 +54,8 @@ public class GameManager : MonoBehaviour
         {
             case Direction.upRight:
                 //Debug.Log("Current: " + grid.GetCell(snakeHead.X(), snakeHead.Y()).GetCellValue());
-                nextCell.x += 1;
-                nextCell.y -= 1;
+                nextCell.x++;
+                nextCell.y++;
                 if (CheckNext(nextCell))
                 {
                     GameOver();
@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
                 break;
             case Direction.upLeft:
                 nextCell.x--;
-                nextCell.y--;
+                nextCell.y++;
                 //Debug.Log("Current: " + grid.GetCell(snakeHead.X(), snakeHead.Y()).GetCellValue());
                 if (CheckNext(nextCell))
                 {
@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
                 break;
             case Direction.downLeft:
                 nextCell.x--;
-                nextCell.y++;
+                nextCell.y--;
                 if (CheckNext(nextCell))
                 {
                     GameOver();
@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour
                 break;
             case Direction.downRight:
                 nextCell.x++;
-                nextCell.y++;
+                nextCell.y--;
                 if (CheckNext(nextCell))
                 {
                     GameOver();
@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
                 MoveSnakeTo(nextCell, startingValue);
                 break;
             case Direction.right:
-                nextCell.x -= 2;
+                nextCell.x += 2;
                 if (CheckNext(nextCell))
                 {
                     GameOver();
@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
                 MoveSnakeTo(nextCell, startingValue);
                 break;
             case Direction.left:
-                nextCell.x += 2;
+                nextCell.x -= 2;
                 if (CheckNext(nextCell))
                 {
                     GameOver();
@@ -129,10 +129,10 @@ public class GameManager : MonoBehaviour
     //Returns false if the the player can move into the next space
     bool CheckNext(int x, int y)
     {
-        Debug.Log("Next: " + grid.GetCell(x, y).GetCellValue());
+        //Debug.Log("Next: " + x + ", " + y + " Value: " + grid.GetCell(x, y).GetCellValue());
         var nextCell = grid.GetCell(x, y);
 
-        if (x < 0 || x > grid.xSize)
+        if (x < 0 || x > grid.xSizeAdjusted)
         {
             //Hit wall
             Debug.Log("X is hitting the wall");
@@ -234,7 +234,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator Simulate()
     {
-        Debug.Log("Simulation!");
+        //Debug.Log("Simulation!");
         SimulateCurrentState();
         yield return new WaitForSeconds(1f / simulationsPerSecond);
         nextSimulation = StartCoroutine(Simulate());
@@ -289,8 +289,13 @@ public class GameManager : MonoBehaviour
 
     private Coord GetRandomCoordinate()
     {
-        Coord newCoord = new Coord(Random.Range(0, GridModel.Instance.xSize), 
+        Coord newCoord = new Coord(Random.Range(0, GridModel.Instance.xSizeAdjusted), 
             Random.Range(0, GridModel.Instance.ySize));
+
+        if ((newCoord.x + newCoord.y) % 2 == 1)
+        {
+            return GetRandomCoordinate();
+        }
 
         return newCoord;
     }

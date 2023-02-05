@@ -7,7 +7,8 @@ public enum Occupant
     empty = 0,
     snake = 1,
     wall = 2,
-    fruit = 3
+    fruit = 3,
+    bad = 4
 }
 
 public class Coord

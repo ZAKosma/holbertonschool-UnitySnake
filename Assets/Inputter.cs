@@ -16,26 +16,32 @@ public class Inputter : MonoBehaviour
     {
         if (Input.GetKeyDown(upLeft))
         {
-            GameManager.Instance.Snake().snakeDirection = Direction.upLeft;
+            if(GameManager.Instance.Snake().snakeDirection != Direction.downRight)
+                GameManager.Instance.Snake().snakeDirection = Direction.upLeft;
         }
         if (Input.GetKeyDown(upRight))
         {
-            GameManager.Instance.Snake().snakeDirection = Direction.upRight;
+            if(GameManager.Instance.Snake().snakeDirection != Direction.downLeft)
+                GameManager.Instance.Snake().snakeDirection = Direction.upRight;
         }
         if (Input.GetKeyDown(downLeft))
         {
-            GameManager.Instance.Snake().snakeDirection = Direction.downLeft;
+            if(GameManager.Instance.Snake().snakeDirection != Direction.upRight)
+                GameManager.Instance.Snake().snakeDirection = Direction.downLeft;
         }
         if (Input.GetKeyDown(downRight))
         {
-            GameManager.Instance.Snake().snakeDirection = Direction.downRight;
+            if(GameManager.Instance.Snake().snakeDirection != Direction.upLeft)
+                GameManager.Instance.Snake().snakeDirection = Direction.downRight;
         }
         if (Input.GetKeyDown(right))
         {
-            GameManager.Instance.Snake().snakeDirection = Direction.right;
+            if(GameManager.Instance.Snake().snakeDirection != Direction.left)
+                GameManager.Instance.Snake().snakeDirection = Direction.right;
         }if (Input.GetKeyDown(left))
         {
-            GameManager.Instance.Snake().snakeDirection = Direction.left;
+            if(GameManager.Instance.Snake().snakeDirection != Direction.right)
+                GameManager.Instance.Snake().snakeDirection = Direction.left;
         }
     }
 }

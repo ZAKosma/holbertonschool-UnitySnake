@@ -17,8 +17,12 @@ public class GridModel : MonoBehaviour
     public float cellSpacing = 20;
     
     //Public settings variables
-    public int xSize = 12;
+    [SerializeField]
+    private int xSize = 12;
     public int ySize = 12;
+
+    [HideInInspector]
+    public int xSizeAdjusted;
 
     public int snakeStartX = -1;
     public int snakeStartY = -1;
@@ -42,6 +46,8 @@ public class GridModel : MonoBehaviour
         {
             Instance = this;
         }
+
+        xSizeAdjusted = xSize * 2;
     }
 
     private void Start()
@@ -50,12 +56,6 @@ public class GridModel : MonoBehaviour
         {
             CreateNewGrid();
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     [ContextMenu("Create grid in Edit mode")]
@@ -86,11 +86,11 @@ public class GridModel : MonoBehaviour
             grid = new Grid(xSize, ySize, snakeStartX, snakeStartY);
 
         }
-        
+
         //Create and Render the models
         Vector3 anchorStart = gridAnchorPoint.transform.position;
 
-        /*for (int x = 0; x < xSize; x++)
+       /*for (int x = 0; x < xSize; x++)
         {
             for (int y = 0; y < ySize; y++)
             {
@@ -98,7 +98,7 @@ public class GridModel : MonoBehaviour
                 GameObject go = Instantiate(cellPrefab, gridAnchorPoint.transform);
                 CellModel cm = go.GetComponent<CellModel>();
 
-                cm.Init(grid.GetCell(x,y));
+                cm.Init(grid.GetCell(x, y));
                 cm.SetSize(cellSize - borderSize, cellSize);
                 grid.GetCell(x, y).SetModel(cm);
 
@@ -107,63 +107,53 @@ public class GridModel : MonoBehaviour
                 if (y % 2 == 0)
                 {
                     newPos.x += (cellSize / 2);
-                } 
-                newPos.y += y * ((cellSize + cellSpacing)* .75f);
-                
-                
+                }
+
+                newPos.y += y * ((cellSize + cellSpacing) * .75f);
+
+
                 go.transform.position = newPos;
-                
+
                 cm.UpdateCellColor(GetOccupantColor(o));
             }
         }*/
-
+       int xMod = 0;
         for (int y = 0; y < ySize; y++)
         {
-            if (y % 2 == 0)
+            if (y % 2 == 1)
             {
-                for (int x = 1; x < xSize + 1; x += 2)
-                {
-                    Occupant o = grid.GetCellValue(x, y);
-                    GameObject go = Instantiate(cellPrefab, gridAnchorPoint.transform);
-                    CellModel cm = go.GetComponent<CellModel>();
-
-                    cm.Init(grid.GetCell(x,y));
-                    cm.SetSize(cellSize - borderSize, cellSize);
-                    grid.GetCell(x, y).SetModel(cm);
-
-                    var newPos = anchorStart;
-                    newPos.x += ((x / 2) * (cellSize + cellSpacing)) + cellSpacing;
-                    newPos.x += (cellSize / 2);
-                    newPos.y += (y / 2) * ((cellSize + cellSpacing)* .75f);
-                
-                
-                    go.transform.position = newPos;
-                
-                    cm.UpdateCellColor(GetOccupantColor(o));
-                }
+                xMod = 1;
             }
             else
             {
-                for (int x = 0; x < xSize; x += 2)
+                xMod = 0;
+            }
+            for (int x = 0; x < xSize * 2; x += 2)
+            {
+                
+                //Create hexcell gameobject
+                Occupant o = grid.GetCellValue(x + xMod, y);
+                GameObject go = Instantiate(cellPrefab, gridAnchorPoint.transform);
+                CellModel cm = go.GetComponent<CellModel>();
+
+                cm.Init(grid.GetCell(x +xMod, y));
+                cm.SetSize(cellSize - borderSize, cellSize);
+                grid.GetCell(x + xMod, y).SetModel(cm);
+
+                //Set hexcell position
+                var newPos = anchorStart;
+                newPos.x += ((x/2) * (cellSize + cellSpacing)) + cellSpacing;
+                if (y % 2 == 1)
                 {
-                    Occupant o = grid.GetCellValue(x, y);
-                    GameObject go = Instantiate(cellPrefab, gridAnchorPoint.transform);
-                    CellModel cm = go.GetComponent<CellModel>();
-
-                    cm.Init(grid.GetCell(x,y));
-                    cm.SetSize(cellSize - borderSize, cellSize);
-                    grid.GetCell(x, y).SetModel(cm);
-
-                    var newPos = anchorStart;
-                    newPos.x += ((x / 2) * (cellSize + cellSpacing)) + cellSpacing;
-
-                    newPos.y += (y / 2) * ((cellSize + cellSpacing)* .75f);
-                
-                
-                    go.transform.position = newPos;
-                
-                    cm.UpdateCellColor(GetOccupantColor(o));
+                    newPos.x += (cellSize / 2);
                 }
+
+                newPos.y += y * ((cellSize + cellSpacing) * .75f);
+
+
+                go.transform.position = newPos;
+
+                cm.UpdateCellColor(GetOccupantColor(o));
             }
         }
     }
@@ -210,5 +200,14 @@ public class GridModel : MonoBehaviour
     public Cell GetCell(Coord c)
     {
         return GetCell(c.x, c.y);
+    }
+
+    [ContextMenu("Show all the coordinates")]
+    public void DebugAllCoordinates()
+    {
+        foreach (var c in gridAnchorPoint.GetComponentsInChildren<CellModel>())
+        {
+            c.DebugCoordinates();
+        }
     }
 }

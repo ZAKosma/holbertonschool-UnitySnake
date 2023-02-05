@@ -10,6 +10,9 @@ public class CellModel : MonoBehaviour
     private Image thisModelColor;
     private Image thisModelBorder;
 
+    [SerializeField]
+    private Text coordDebug;
+
     public void Init()
     {
         
@@ -17,7 +20,9 @@ public class CellModel : MonoBehaviour
         thisModelBorder = go1.GetComponent<Image>();
         var go2 = transform.GetChild(1);
         thisModelColor = go2.GetComponent<Image>();
-        
+
+        //coordDebug = this.gameObject.GetComponentInChildren<Text>();
+        coordDebug.gameObject.SetActive(false);
     }
     public void Init(Cell c)
     {
@@ -35,6 +40,8 @@ public class CellModel : MonoBehaviour
             borderSize, borderSize);*/
         thisModelColor.rectTransform.sizeDelta = new Vector2(colorSize, colorSize);
         thisModelBorder.rectTransform.sizeDelta = new Vector2(borderSize, borderSize);
+
+        coordDebug.rectTransform.sizeDelta = new Vector2(colorSize, colorSize);
     }
 
     private void Start()
@@ -75,5 +82,12 @@ public class CellModel : MonoBehaviour
     public void UpdateCellColor(Color c)
     {
         thisModelColor.color = c;
+    }
+
+    [ContextMenu("Show Coordinates")]
+    public void DebugCoordinates()
+    {
+        coordDebug.gameObject.SetActive(true);
+        coordDebug.text = thisCell.X() + ", " + thisCell.Y();
     }
 }
