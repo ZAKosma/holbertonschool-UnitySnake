@@ -20,7 +20,9 @@ public class GameManager : MonoBehaviour
     public float startDelay = 3;
 
     private bool snakeIsGrowing = false;
-    
+
+    private List<Cell> highLighted;
+
     private void Awake()
     {
         if (Instance != null && Instance != this) 
@@ -41,6 +43,7 @@ public class GameManager : MonoBehaviour
     {
         grid = GridModel.Instance;
         StartCoroutine(StartDelay());
+        highLighted = new List<Cell>();
     }
 
     void SimulateCurrentState()
@@ -198,6 +201,7 @@ public class GameManager : MonoBehaviour
             
             snakeIsGrowing = false;
             AddFruit();
+            HighlightCells();
         }
         else
         {
@@ -228,6 +232,9 @@ public class GameManager : MonoBehaviour
         {
             AddFruit();
         }
+        
+        HighlightCells();
+        
         Debug.LogWarning("Starting Simulation");
         StartCoroutine(Simulate());
     }
@@ -310,5 +317,72 @@ public class GameManager : MonoBehaviour
 
         }
         
+    }
+
+    public void HighlightCells(Coord start, Direction direction, int length = -1)
+    {
+        foreach (var c in highLighted)
+        {
+            c.GetModel().UpdateCellColor();
+        }
+        if (length != -1)
+        {
+            Debug.LogError("Limited length highlight not implemented");
+        }
+        else
+        {
+            var nextCell = grid.GetCell(GetNextCoord(start, direction));
+            if(nextCell == null)
+            {
+                return;
+            }
+            var canHighlight = nextCell.IsEmpty();
+            while (canHighlight)
+            {
+                highLighted.Add(nextCell);
+                nextCell.GetModel().UpdateCellColor(grid.highlightColor);
+
+                var nextCoord = GetNextCoord(nextCell.Coord(), direction);
+
+                if (nextCoord.x > grid.xSizeAdjusted -1 || nextCoord.x < 0)
+                {
+                    return;
+                }
+
+                if (nextCoord.y > grid.ySize - 1 || nextCoord.y < 0)
+                {
+                    return;
+                }
+                
+                nextCell = grid.GetCell(nextCoord);
+                canHighlight = nextCell.IsEmpty();
+            }
+        }
+    }
+
+    void HighlightCells(int length = -1)
+    {
+        HighlightCells(snake.snakeCells[0].Coord(), snake.GetSnakeDirection(), length);
+    }
+
+    Coord GetNextCoord(Coord c, Direction d)
+    {
+        switch (d)
+        {
+            case Direction.upRight:
+                return new Coord(c.x + 1, c.y + 1);
+            case Direction.upLeft:
+                return new Coord(c.x - 1, c.y + 1);
+            case Direction.downLeft:
+                return new Coord(c.x - 1, c.y - 1);
+            case Direction.downRight:
+                return new Coord(c.x + 1, c.y - 1);
+            case Direction.right:
+                return new Coord(c.x + 2, c.y);
+            case Direction.left:
+                return new Coord(c.x - 2, c.y);
+        }
+
+        return null;
     }
 }

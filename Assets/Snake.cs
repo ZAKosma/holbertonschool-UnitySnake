@@ -66,6 +66,8 @@ public class Snake
         {
             snakeDirection = Direction.downLeft;
         }
+        
+        GameManager.Instance.HighlightCells(snakeCells[0].Coord(), snakeDirection);
     }
     public void RotateRight()
     {
@@ -74,6 +76,9 @@ public class Snake
         {
             snakeDirection = Direction.left;
         }
+        
+        GameManager.Instance.HighlightCells(snakeCells[0].Coord(), snakeDirection);
+
     }
 
     public Direction GetSnakeDirection()

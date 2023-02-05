@@ -9,7 +9,7 @@ public enum Occupant
     wall = 2,
     fruit = 3,
     bad = 4,
-    snakeHead = 5
+    snakeHead = 5,
 }
 
 public class Coord
@@ -21,6 +21,11 @@ public class Coord
     {
         x = xValue;
         y = yValue;
+    }
+
+    public override string ToString()
+    {
+        return "(" + x + ", " + y + ")";
     }
 }
 
@@ -78,5 +83,21 @@ public class Cell
     public int Y()
     {
         return y;
+    }
+
+    public Coord Coord()
+    {
+        return new Coord(x, y);
+    }
+
+    public bool IsEmpty()
+    {
+        switch (cellValue)
+        {
+            case Occupant.empty:
+                return true;
+            default:
+                return false;
+        }
     }
 }

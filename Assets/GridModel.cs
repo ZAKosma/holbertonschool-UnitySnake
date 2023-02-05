@@ -36,6 +36,7 @@ public class GridModel : MonoBehaviour
     public Color fruitColor;
     public Color wallColor;
     public Color emptyColor;
+    public Color highlightColor;
 
     private void Awake()
     {
