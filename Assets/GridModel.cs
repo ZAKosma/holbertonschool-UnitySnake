@@ -32,6 +32,7 @@ public class GridModel : MonoBehaviour
     //Colors
     public Color backGroundColor;
     public Color snakeColor;
+    public Color snakeHeadColor;
     public Color fruitColor;
     public Color wallColor;
     public Color emptyColor;
@@ -171,6 +172,8 @@ public class GridModel : MonoBehaviour
                 return snakeColor;
             case Occupant.wall:
                 return wallColor;
+            case Occupant.snakeHead:
+                return snakeHeadColor;
             default:
                 Debug.LogError("Somehow we got passed an occupant that doesn't exist");
                 return Color.magenta;

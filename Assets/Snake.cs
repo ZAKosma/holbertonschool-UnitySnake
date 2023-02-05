@@ -5,16 +5,17 @@ using UnityEngine.UIElements;
 
 public enum Direction
 {
-    right = 0,
-    left = 1,
+    left = 0,
+    upLeft = 1,
     upRight = 2,
-    upLeft = 3,
+    right = 3,
     downRight = 4,
     downLeft = 5
 }
 public class Snake
 {
-    public Direction snakeDirection;
+    [SerializeField]
+    private Direction snakeDirection;
 
     public List<Cell> snakeCells;
 
@@ -52,6 +53,31 @@ public class Snake
     public void MoveSnakePart(int x, int y, int index)
     {
         snakeCells[index] = GridModel.Instance.SetCell(x, y, Occupant.snake).GetCellRaw();
-        
+    }
+    public void MoveSnakeHead(int x, int y)
+    {
+        snakeCells[0] = GridModel.Instance.SetCell(x, y, Occupant.snakeHead).GetCellRaw();
+    }
+
+    public void RotateLeft()
+    {
+        snakeDirection = snakeDirection - 1;
+        if ((int)snakeDirection < 0)
+        {
+            snakeDirection = Direction.downLeft;
+        }
+    }
+    public void RotateRight()
+    {
+        snakeDirection = snakeDirection + 1;
+        if ((int)snakeDirection > 5)
+        {
+            snakeDirection = Direction.left;
+        }
+    }
+
+    public Direction GetSnakeDirection()
+    {
+        return snakeDirection;
     }
 }

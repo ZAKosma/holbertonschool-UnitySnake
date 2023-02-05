@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
         Coord startingValue = new Coord(snakeHead.X(), snakeHead.Y());
         Coord nextCell = new Coord(snakeHead.X(), snakeHead.Y());
         //Move the player / snake
-        switch (snake.snakeDirection)
+        switch (snake.GetSnakeDirection())
         {
             case Direction.upRight:
                 //Debug.Log("Current: " + grid.GetCell(snakeHead.X(), snakeHead.Y()).GetCellValue());
@@ -175,7 +175,7 @@ public class GameManager : MonoBehaviour
          * grid.SetCell(x, y, Occupant.snake);
          * snake.snakeCells[0] = grid.GetCell(x, y);
         */
-        snake.MoveSnakePart(x, y, 0);
+        snake.MoveSnakeHead(x, y);
         
         Coord previousPosition = oldCoord;
         //Move older snake body to front;

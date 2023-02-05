@@ -12,7 +12,7 @@ public class Inputter : MonoBehaviour
     public KeyCode left = KeyCode.S;
 
     // Update is called once per frame
-    void Update()
+    /*void Update()
     {
         if (Input.GetKeyDown(upLeft))
         {
@@ -43,5 +43,5 @@ public class Inputter : MonoBehaviour
             if(GameManager.Instance.Snake().snakeDirection != Direction.right)
                 GameManager.Instance.Snake().snakeDirection = Direction.left;
         }
-    }
+    }*/
 }
