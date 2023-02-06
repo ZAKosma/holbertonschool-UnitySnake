@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using ScriptableObjectArchitecture;
 
 public enum GameType {
     square = 0, 
@@ -268,16 +267,20 @@ public class GameManager : MonoBehaviour
     IEnumerator StartDelay()
     {
         var splitDelay = startDelay / 3;
-        
+
         yield return new WaitForSeconds(.1f);
         //Debug.Log("Cell: " + grid.GetCell(grid.snakeStartX, grid.snakeStartY));
         snake = Snake();
-        yield return new WaitForSeconds(splitDelay);
-        StopLight.Instance.UpdateLight();
-        yield return new WaitForSeconds(splitDelay);
-        StopLight.Instance.UpdateLight();
-        yield return new WaitForSeconds(splitDelay);
-        StopLight.Instance.UpdateLight();
+            
+        if (startDelay > 0){
+            yield return new WaitForSeconds(splitDelay);
+            StopLight.Instance.UpdateLight();
+            yield return new WaitForSeconds(splitDelay);
+            StopLight.Instance.UpdateLight();
+            yield return new WaitForSeconds(splitDelay);
+            StopLight.Instance.UpdateLight();
+        }
+
         Debug.LogWarning("Generating fruit");
         for (var i = 0; i < GridModel.Instance.startingFruit; i++)
         {

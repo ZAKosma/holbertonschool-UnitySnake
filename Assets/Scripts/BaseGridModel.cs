@@ -17,10 +17,17 @@ public abstract class GridModel: MonoBehaviour
     public GameObject cellPrefab;
     public GameObject gridAnchorPoint;
     public bool staggerRows = false;
-    public float cellSize = 120;
-    public float borderSize = 20;
-    public float cellSpacing = 20;
+    public int cellSize = 120;
+    public int borderSize = 20;
+    public int cellSpacing = 20;
     
+    //Resolution settings
+    public bool useResolutionReSizing = true;
+    public int pixelBorderLeft = 40;
+    public int pixelBorderRight = 40;
+    public int pixelBorderTop = 40;
+    public int pixelBorderBottom = 40;
+
     //Public settings variables
     [SerializeField]
     public int xSize = 12;
@@ -59,15 +66,54 @@ public abstract class GridModel: MonoBehaviour
 
     protected void Start()
     {
-        if (grid == null)
+        /*if (grid == null)
+        {*/
+        CreateNewGrid();
+        //}
+    }
+
+    public void ResizeForResolution()
+    {
+        var resY = Screen.currentResolution.height;
+        var resX = Screen.currentResolution.width;
+
+        Debug.Log("Resolution: " + resX + " x " + resY);
+        
+        resX -= pixelBorderLeft + pixelBorderLeft;
+        resY -= pixelBorderTop + pixelBorderBottom;
+
+        resX -= cellSpacing * xSize;
+        resY -= cellSpacing * ySize;
+
+        var cellX = resX / xSize;
+        var cellY = resY / ySize;
+
+        if (cellX < cellY)
         {
-            CreateNewGrid();
+            cellSize = cellX;
         }
+        else
+        {
+            cellSize = cellY;
+        }
+
+        //var newAnchor = new Vector3(-1200, -640, 0);
+        var newAnchor = new Vector3(35f, 35f, 0);
+
+        newAnchor.x += pixelBorderLeft;
+        newAnchor.y += pixelBorderBottom;
+
+        gridAnchorPoint.transform.position = newAnchor;
     }
 
     [ContextMenu("Create grid in Edit mode")]
     public void CreateNewGrid()
     {
+        if (useResolutionReSizing)
+        {
+            ResizeForResolution();
+        }
+        
         //Delete children
         if (gridAnchorPoint.transform.childCount > 0)
         {
