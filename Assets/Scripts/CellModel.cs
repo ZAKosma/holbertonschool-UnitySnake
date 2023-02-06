@@ -66,7 +66,7 @@ public class CellModel : MonoBehaviour
     
     public Occupant GetCellValue()
     {
-        return this.GetCellValue();
+        return thisCell.GetCellValue();
     }
 
     public Cell GetCellRaw()

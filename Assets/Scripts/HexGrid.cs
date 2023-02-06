@@ -32,24 +32,22 @@ public class HexGrid : BaseGrid
                     SetCellValue(x,y, Occupant.bad);
                 }
 
-                Debug.Log("X: " + x + " Y: " + y + " Value: " + grid[x,y].GetCellValue());
+                //Debug.Log("X: " + x + " Y: " + y + " Value: " + grid[x,y].GetCellValue());
             }
         }
     }
 
-    public Occupant GetCellValue(int x, int y)
+    public override Coord GetRandomCoordinate()
     {
-        return grid[x, y].GetCellValue();
-    }
+        Coord newCoord = new Coord(Random.Range(0, GridModel.Instance.xSizeAdjusted), 
+            Random.Range(0, GridModel.Instance.ySize));
 
-    public Cell GetCell(int x, int y)
-    {
-        return grid[x, y];
-    }
-    
-    public Cell SetCellValue(int x, int y, Occupant occupant = 0)
-    {
-        return grid[x, y].SetCellValue(occupant);
+        if ((newCoord.x + newCoord.y) % 2 == 1)
+        {
+            return GetRandomCoordinate();
+        }
+
+        return newCoord;
     }
 }
 

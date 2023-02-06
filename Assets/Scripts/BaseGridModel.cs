@@ -5,24 +5,25 @@ using UnityEngine;
 
 
 
-public class GridModel: MonoBehaviour
+public abstract class GridModel: MonoBehaviour
 {
     public static GridModel Instance { get; private set; }
     
-    private BaseGrid grid;
+    protected BaseGrid grid;
 
     public GameType gameType;
     
     //Public default variabLes?
     public GameObject cellPrefab;
     public GameObject gridAnchorPoint;
+    public bool staggerRows = false;
     public float cellSize = 120;
     public float borderSize = 20;
     public float cellSpacing = 20;
     
     //Public settings variables
     [SerializeField]
-    protected int xSize = 12;
+    public int xSize = 12;
     public int ySize = 12;
 
     [HideInInspector]
@@ -42,7 +43,7 @@ public class GridModel: MonoBehaviour
     public Color emptyColor;
     public Color highlightColor;
 
-    private void Awake()
+    protected void Awake()
     {
         if (Instance != null && Instance != this) 
         { 
@@ -56,7 +57,7 @@ public class GridModel: MonoBehaviour
         xSizeAdjusted = xSize * 2;
     }
 
-    private void Start()
+    protected void Start()
     {
         if (grid == null)
         {
@@ -89,12 +90,12 @@ public class GridModel: MonoBehaviour
             //Check for snake start pos
             if (snakeStartX < 0 || snakeStartY < 0) {
                 grid = new HexGrid(xSize, ySize);
-                grid = CreateSceneModelsHex((BaseGrid)grid);
+                grid = CreateSceneModels(grid);
             }
             //Start grid
             else {
                 grid = new HexGrid(xSize, ySize, snakeStartX, snakeStartY);
-
+                grid = CreateSceneModels(grid);
             }
         }
         else if (gameType == GameType.square) {
@@ -103,50 +104,19 @@ public class GridModel: MonoBehaviour
             //Check for snake start pos
             if (snakeStartX < 0 || snakeStartY < 0) {
                 grid = new SqGrid(xSize, ySize);
-
+                grid = CreateSceneModels(grid);
             }
             //Start grid
             else {
                 grid = new SqGrid(xSize, ySize, snakeStartX, snakeStartY);
-
+                grid = CreateSceneModels(grid);
             }
         }
-
-
-
-        //Create and Render the models
-
-        /*for (int x = 0; x < xSize; x++)
-         {
-             for (int y = 0; y < ySize; y++)
-             {
-                 Occupant o = grid.GetCellValue(x, y);
-                 GameObject go = Instantiate(cellPrefab, gridAnchorPoint.transform);
-                 CellModel cm = go.GetComponent<CellModel>();
- 
-                 cm.Init(grid.GetCell(x, y));
-                 cm.SetSize(cellSize - borderSize, cellSize);
-                 grid.GetCell(x, y).SetModel(cm);
- 
-                 var newPos = anchorStart;
-                 newPos.x += (x * (cellSize + cellSpacing)) + cellSpacing;
-                 if (y % 2 == 0)
-                 {
-                     newPos.x += (cellSize / 2);
-                 }
- 
-                 newPos.y += y * ((cellSize + cellSpacing) * .75f);
- 
- 
-                 go.transform.position = newPos;
- 
-                 cm.UpdateCellColor(GetOccupantColor(o));
-             }
-         }*/
-       
+        
+        //Should have triggered Create and Render the models
     }
 
-    private HexGrid CreateSceneModelsHex(HexGrid hg) {
+    protected HexGrid CreateSceneModelsHex(HexGrid hg) {
         Vector3 anchorStart = gridAnchorPoint.transform.position;
         
         int xMod = 0;
@@ -175,7 +145,7 @@ public class GridModel: MonoBehaviour
                 //Set hexcell position
                 var newPos = anchorStart;
                 newPos.x += ((x/2) * (cellSize + cellSpacing)) + cellSpacing;
-                if (y % 2 == 1)
+                if (staggerRows && y % 2 == 1)
                 {
                     newPos.x += (cellSize / 2);
                 }
@@ -184,6 +154,7 @@ public class GridModel: MonoBehaviour
 
 
                 go.transform.position = newPos;
+                Debug.Log("Cell " + x + ", " + y + " at " + go.transform.position + " with value " + cm.GetCellValue());
 
                 cm.UpdateCellColor(GetOccupantColor(o));
             }
@@ -191,6 +162,44 @@ public class GridModel: MonoBehaviour
         
         return hg;
     }
+    protected BaseGrid CreateSceneModels(BaseGrid newGrid) {
+        if (gameType == GameType.hex)
+        {
+            newGrid = CreateSceneModelsHex((HexGrid) newGrid);
+            return newGrid;
+        }
+        else // Square
+        {
+            newGrid = CreateSceneModelsSq((SqGrid)newGrid);
+            return newGrid;
+        }
+
+        /*Vector3 anchorStart = gridAnchorPoint.transform.position;
+        
+        for (int x = 0; x < xSize; x++)
+        {
+            for (int y = 0; y < ySize; y++)
+            {
+                Occupant o = newGrid.GetCellValue(x, y);
+                GameObject go = Instantiate(cellPrefab, gridAnchorPoint.transform);
+                CellModel cm = go.GetComponent<CellModel>();
+
+                cm.Init(newGrid.GetCell(x,y));
+                cm.SetSize(cellSize - borderSize, cellSize);
+                newGrid.GetCell(x, y).SetModel(cm);
+
+
+                go.transform.position = GetTargetPosition(x, y);
+                
+                cm.UpdateCellColor(GetOccupantColor(o));
+            }
+        }
+
+        return newGrid;*/
+    }
+
+    protected abstract Vector3 GetTargetPosition(int x, int y);
+    
     private SqGrid CreateSceneModelsSq(SqGrid sqGrid) {
         Vector3 anchorStart = gridAnchorPoint.transform.position;
         
@@ -208,11 +217,11 @@ public class GridModel: MonoBehaviour
 
                 var newPos = anchorStart;
                 newPos.x += (x * (cellSize + cellSpacing)) + cellSpacing;
-                if (y % 2 == 0)
+                if (staggerRows && y % 2 == 0)
                 {
                     newPos.x += (cellSize / 2);
                 } 
-                newPos.y += y * ((cellSize + cellSpacing)* .75f);
+                newPos.y += y * ((cellSize + cellSpacing));
                 
                 
                 go.transform.position = newPos;
@@ -247,7 +256,7 @@ public class GridModel: MonoBehaviour
 
     public CellModel SetCell(int x, int y, Occupant newOccupant)
     {
-        var cell = _hexGrid.GetCell(x, y);
+        var cell = grid.GetCell(x, y);
         cell.SetCellValue(newOccupant);
         cell.GetModel().UpdateCellColor();
 
@@ -262,12 +271,47 @@ public class GridModel: MonoBehaviour
     public Cell GetCell(int x, int y)
     {
         //Debug.Log(grid.GetCell(x,y));
-        return _hexGrid.GetCell(x, y);
+        return grid.GetCell(x, y);
     }
 
     public Cell GetCell(Coord c)
     {
         return GetCell(c.x, c.y);
+    }
+
+    public Cell TryGetCell(Coord c)
+    {
+        if (CoordExists(c))
+        {
+            return GetCell(c);
+        }
+        else
+        {
+            Debug.LogError("TryGetCell failed with coord " + c);
+            return null;
+        }
+    }
+
+    public Coord GetRandomCoordinate()
+    {
+        return grid.GetRandomCoordinate();
+    }
+
+    public Coord GetNextCoordinate(Coord c)
+    {
+        if (gameType == GameType.hex)
+        {
+            return grid.GetNextHexCoord(c);
+        }
+        else // Square
+        {
+            return grid.GetNextSqCoord(c);
+        }
+    }
+
+    public bool CoordExists(Coord c)
+    {
+        return grid.CheckIfCoordExists(c);
     }
 
     [ContextMenu("Show all the coordinates")]

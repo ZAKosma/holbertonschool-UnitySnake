@@ -28,6 +28,15 @@ public class SqGrid : BaseGrid
             }
         }
     }
+
+    public override Coord GetRandomCoordinate()
+    {
+        Coord newCoord = new Coord(Random.Range(0, GridModel.Instance.xSize), 
+            Random.Range(0, GridModel.Instance.ySize));
+
+        return newCoord;
+    }
+
 }
 
 

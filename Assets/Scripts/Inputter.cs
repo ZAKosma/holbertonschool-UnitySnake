@@ -17,24 +17,24 @@ public class Inputter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(up))
+        if (Input.GetKeyDown(up) || Input.GetKeyDown(upAlt))
         {
             if(GameManager.Instance.Snake().GetSnakeSqDirection() != SqDirection.down)
-                GameManager.Instance.Snake().SetSnakeDirection(SqDirection.up);
+                GameManager.Instance.Snake().SetSnakeSqDirection(SqDirection.up);
         }
-        else if (Input.GetKeyDown(right)) {
+        else if (Input.GetKeyDown(down) || Input.GetKeyDown(downAlt)) {
             if (GameManager.Instance.Snake().GetSnakeSqDirection() != SqDirection.up)
-                GameManager.Instance.Snake().SetSnakeDirection(SqDirection.down);
+                GameManager.Instance.Snake().SetSnakeSqDirection(SqDirection.down);
         }
-        else if (Input.GetKeyDown(right))
+        else if (Input.GetKeyDown(right) || Input.GetKeyDown(rightAlt))
         {
             if(GameManager.Instance.Snake().GetSnakeSqDirection() != SqDirection.left)
-                GameManager.Instance.Snake().SetSnakeDirection(SqDirection.right);
+                GameManager.Instance.Snake().SetSnakeSqDirection(SqDirection.right);
         }
-        else if (Input.GetKeyDown(left))
+        else if (Input.GetKeyDown(left) || Input.GetKeyDown(leftAlt))
         {
             if(GameManager.Instance.Snake().GetSnakeSqDirection() != SqDirection.right)
-                GameManager.Instance.Snake().SetSnakeDirection(SqDirection.left);
+                GameManager.Instance.Snake().SetSnakeSqDirection(SqDirection.left);
         }
     }
 }

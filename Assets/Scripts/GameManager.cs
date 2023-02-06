@@ -58,69 +58,115 @@ public class GameManager : MonoBehaviour
         Coord startingValue = new Coord(snakeHead.X(), snakeHead.Y());
         Coord nextCell = new Coord(snakeHead.X(), snakeHead.Y());
         //Move the player / snake
-        switch (snake.GetSnakeDirection())
-        {
-            case HexDirection.upRight:
-                //Debug.Log("Current: " + grid.GetCell(snakeHead.X(), snakeHead.Y()).GetCellValue());
-                nextCell.x++;
-                nextCell.y++;
-                if (CheckNext(nextCell))
-                {
-                    GameOver();
-                    return;
-                }
-                MoveSnakeTo(nextCell, startingValue);
-                break;
-            case HexDirection.upLeft:
-                nextCell.x--;
-                nextCell.y++;
-                //Debug.Log("Current: " + grid.GetCell(snakeHead.X(), snakeHead.Y()).GetCellValue());
-                if (CheckNext(nextCell))
-                {
-                    GameOver();
-                    return;
-                }
-                MoveSnakeTo(nextCell, startingValue);
-                break;
-            case HexDirection.downLeft:
-                nextCell.x--;
-                nextCell.y--;
-                if (CheckNext(nextCell))
-                {
-                    GameOver();
-                    return;
-                }
-                MoveSnakeTo(nextCell, startingValue);
-                break;
-            case HexDirection.downRight:
-                nextCell.x++;
-                nextCell.y--;
-                if (CheckNext(nextCell))
-                {
-                    GameOver();
-                    return;
-                }
-                MoveSnakeTo(nextCell, startingValue);
-                break;
-            case HexDirection.right:
-                nextCell.x += 2;
-                if (CheckNext(nextCell))
-                {
-                    GameOver();
-                    return;
-                }
-                MoveSnakeTo(nextCell, startingValue);
-                break;
-            case HexDirection.left:
-                nextCell.x -= 2;
-                if (CheckNext(nextCell))
-                {
-                    GameOver();
-                    return;
-                }
-                MoveSnakeTo(nextCell, startingValue);
-                break;
+        if(grid.gameType == GameType.hex){
+            switch (snake.GetSnakeHexDirection())
+            {
+                case HexDirection.upRight:
+                    //Debug.Log("Current: " + grid.GetCell(snakeHead.X(), snakeHead.Y()).GetCellValue());
+                    nextCell.x++;
+                    nextCell.y++;
+                    if (CheckNext(nextCell))
+                    {
+                        GameOver();
+                        return;
+                    }
+                    MoveSnakeTo(nextCell, startingValue);
+                    break;
+                case HexDirection.upLeft:
+                    nextCell.x--;
+                    nextCell.y++;
+                    //Debug.Log("Current: " + grid.GetCell(snakeHead.X(), snakeHead.Y()).GetCellValue());
+                    if (CheckNext(nextCell))
+                    {
+                        GameOver();
+                        return;
+                    }
+                    MoveSnakeTo(nextCell, startingValue);
+                    break;
+                case HexDirection.downLeft:
+                    nextCell.x--;
+                    nextCell.y--;
+                    if (CheckNext(nextCell))
+                    {
+                        GameOver();
+                        return;
+                    }
+                    MoveSnakeTo(nextCell, startingValue);
+                    break;
+                case HexDirection.downRight:
+                    nextCell.x++;
+                    nextCell.y--;
+                    if (CheckNext(nextCell))
+                    {
+                        GameOver();
+                        return;
+                    }
+                    MoveSnakeTo(nextCell, startingValue);
+                    break;
+                case HexDirection.right:
+                    nextCell.x += 2;
+                    if (CheckNext(nextCell))
+                    {
+                        GameOver();
+                        return;
+                    }
+                    MoveSnakeTo(nextCell, startingValue);
+                    break;
+                case HexDirection.left:
+                    nextCell.x -= 2;
+                    if (CheckNext(nextCell))
+                    {
+                        GameOver();
+                        return;
+                    }
+                    MoveSnakeTo(nextCell, startingValue);
+                    break;
 
+            }
+        }
+        else // We are in square mode
+        {
+            switch (snake.GetSnakeSqDirection())
+            {
+                case SqDirection.up:
+                    //Debug.Log("Current: " + grid.GetCell(snakeHead.X(), snakeHead.Y()).GetCellValue());
+                    nextCell.y++;
+                    if (CheckNext(nextCell))
+                    {
+                        GameOver();
+                        return;
+                    }
+                    MoveSnakeTo(nextCell, startingValue);
+                    break;
+                case SqDirection.down:
+                    nextCell.y--;
+                    //Debug.Log("Current: " + grid.GetCell(snakeHead.X(), snakeHead.Y()).GetCellValue());
+                    if (CheckNext(nextCell))
+                    {
+                        GameOver();
+                        return;
+                    }
+                    MoveSnakeTo(nextCell, startingValue);
+                    break;
+                case SqDirection.right:
+                    nextCell.x++;
+                    if (CheckNext(nextCell))
+                    {
+                        GameOver();
+                        return;
+                    }
+                    MoveSnakeTo(nextCell, startingValue);
+                    break;
+                case SqDirection.left:
+                    nextCell.x--;
+                    if (CheckNext(nextCell))
+                    {
+                        GameOver();
+                        return;
+                    }
+                    MoveSnakeTo(nextCell, startingValue);
+                    break;
+            }
         }
         //Check if they hit anything
         //And???
@@ -282,7 +328,7 @@ public class GameManager : MonoBehaviour
     public void AddFruit()
     {
         var isSafeSpawn = false;
-        var spawnLocation = GetRandomCoordinate();
+        var spawnLocation = grid.GetRandomCoordinate();
 
         while (!isSafeSpawn)
         {
@@ -292,24 +338,11 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                spawnLocation = GetRandomCoordinate();
+                spawnLocation = grid.GetRandomCoordinate();
             }
         }
 
         GridModel.Instance.SetCell(spawnLocation, Occupant.fruit);
-    }
-
-    private Coord GetRandomCoordinate()
-    {
-        Coord newCoord = new Coord(Random.Range(0, GridModel.Instance.xSizeAdjusted), 
-            Random.Range(0, GridModel.Instance.ySize));
-
-        if ((newCoord.x + newCoord.y) % 2 == 1)
-        {
-            return GetRandomCoordinate();
-        }
-
-        return newCoord;
     }
 
     [ContextMenu("Debug my snake!")]
@@ -324,7 +357,7 @@ public class GameManager : MonoBehaviour
         
     }
 
-    public void HighlightCells(Coord start, HexDirection hexDirection, int length = -1)
+    /*public void HighlightCells(Coord start, int length = -1)
     {
         foreach (var c in highLighted)
         {
@@ -336,7 +369,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            var nextCell = grid.GetCell(GetNextCoord(start, hexDirection));
+            var nextCell = new Cell(0, 0);
             if(nextCell == null)
             {
                 return;
@@ -347,7 +380,7 @@ public class GameManager : MonoBehaviour
                 highLighted.Add(nextCell);
                 nextCell.GetModel().UpdateCellColor(grid.highlightColor);
 
-                var nextCoord = GetNextCoord(nextCell.Coord(), hexDirection);
+                //var nextCoord = GetNextCoord(nextCell.Coord(), hexDirection);
 
                 if (nextCoord.x > grid.xSizeAdjusted -1 || nextCoord.x < 0)
                 {
@@ -363,31 +396,52 @@ public class GameManager : MonoBehaviour
                 canHighlight = nextCell.IsEmpty();
             }
         }
-    }
+    }*/
+    public void HighlightCells(Coord start, int length = -1)
+    {
+        foreach (var c in highLighted)
+        {
+            c.GetModel().UpdateCellColor();
+        }
+        if (length != -1)
+        {
+            Debug.LogError("Limited length highlight not implemented");
+        }
+        else
+        {
+            var nextCoord = grid.GetNextCoordinate(start);
 
+            Cell nextCell = grid.GetCell(nextCoord);
+            
+            if(nextCell == null)
+            {
+                return;
+            }
+            
+            var canHighlight = nextCell.IsEmpty();
+            
+            while (canHighlight)
+            {
+                highLighted.Add(nextCell);
+                nextCell.GetModel().UpdateCellColor(grid.highlightColor);
+                
+                nextCoord = grid.GetNextCoordinate(nextCell.Coord());
+                //Debug.Log("NEXT COORD: " + nextCoord);
+
+                if(grid.CoordExists(nextCoord)){
+                    nextCell = grid.GetCell(nextCoord);
+                    canHighlight = nextCell.IsEmpty();
+                }
+                else
+                {
+                    canHighlight = false;
+                }
+            }
+        }
+    }
+    
     void HighlightCells(int length = -1)
     {
-        HighlightCells(snake.snakeCells[0].Coord(), snake.GetSnakeDirection(), length);
-    }
-
-    Coord GetNextCoord(Coord c, HexDirection d)
-    {
-        switch (d)
-        {
-            case HexDirection.upRight:
-                return new Coord(c.x + 1, c.y + 1);
-            case HexDirection.upLeft:
-                return new Coord(c.x - 1, c.y + 1);
-            case HexDirection.downLeft:
-                return new Coord(c.x - 1, c.y - 1);
-            case HexDirection.downRight:
-                return new Coord(c.x + 1, c.y - 1);
-            case HexDirection.right:
-                return new Coord(c.x + 2, c.y);
-            case HexDirection.left:
-                return new Coord(c.x - 2, c.y);
-        }
-
-        return null;
+        HighlightCells(snake.snakeCells[0].Coord(), length);
     }
 }
