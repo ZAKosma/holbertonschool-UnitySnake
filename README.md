@@ -2,17 +2,19 @@ Hey!
 
 Welcome to my snake game!
 
-Here is the Hexagonal version:
-DEVv0.0.1
-https://github.com/ZAKosma/UnitySnake/tree/hex
+This is currently under sporatic sprint development. For it only works in Edtior, Let me know if you have any questions. I hope you enjoy.
 
-Here is the Square version:
-DEVv0.0.1A
-https://github.com/ZAKosma/UnitySnake/tree/square
+Current Version:
+v0.0.1B
+(Don't go older than this version or commit)
+- Fixed branching issues
+- Now there are 2 seperate scenes for hexagon and rectangle grids
+- All generation currently working as expected
 
-This is currently under sporatic sprint development. Catch on later!
 
-For it only works in Edtior, Let me know if you have any questions. I hope you enjoy.
+Version Notes:
+V0.0.1A
+- Initalized the basic game
 
 Here is the License (MIT):
 https://github.com/ZAKosma/UnitySnake/blob/main/LICENSE
