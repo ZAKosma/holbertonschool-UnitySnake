@@ -57,11 +57,11 @@ public abstract class BaseGrid
         var xLength = grid.GetLength(0);
         var yLength = grid.GetLength(1);
 
-        if (c.x >= xLength - 1 || c.x < 0)
+        if (c.x >= xLength || c.x < 0)
         {
             return false;
         }
-        if (c.y >= yLength - 1 || c.y < 0)
+        if (c.y >= yLength || c.y < 0)
         {
             return false;
         }
